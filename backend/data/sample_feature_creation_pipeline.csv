@@ -1,0 +1,2 @@
+project_id,dataset_id,feature_store_id,pipeline_id,feature_name,function_name,input_param_value,sequence_num
+0000-0000-0000-0000,0000-0000-0000-0000,0000-0000-0000-0000,0000-0000-0000-0000,Value_Last_14Days_Max,JOIN,{"table1_path": "project_1_001", "table2_path": "project_1_002", "key": ["Host"], "INNER"},1

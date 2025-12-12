@@ -1,0 +1,2 @@
+project_id,dataset_id,n_past_week_for_training,n1_next_week_for_prediction,n2_next_week_for_prediction,num_columns,table_path,creation_date
+0000-0000-0000-0000,0000-0000-0000-0000,12,4,8,4,project_0000_0000_0000_0000__dataset_001,2039-12-12 10:00:00

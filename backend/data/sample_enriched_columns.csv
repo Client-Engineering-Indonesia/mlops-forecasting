@@ -1,0 +1,4 @@
+project_id,dataset_id,column_name,column_description,column_usage,column_type
+0000-0000-0000-0000,0000-0000-0000-0000,Host,Host name to be forecasted,index,categorical
+0000-0000-0000-0000,0000-0000-0000-0000,Date,Cutoff date when data is recorded,feature,date
+0000-0000-0000-0000,0000-0000-0000-0000,Value,Value to be forecasted,target,numeric

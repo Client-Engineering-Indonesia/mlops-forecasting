@@ -1,0 +1,209 @@
+tables:
+  - table_name: projects
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: project_name
+        type: VARCHAR
+        default: NULL
+      - name: project_description
+        type: VARCHAR
+        default: NULL
+      - name: creation_date
+        type: TIMESTAMPTZ
+        default: NOW()
+  - table_name: datasets
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: n_past_week_for_training
+        type: INTEGER
+        default: NULL
+      - name: n1_next_week_for_prediction
+        type: INTEGER
+        default: NULL
+      - name: n2_next_week_for_prediction
+        type: INTEGER
+        default: NULL
+      - name: num_columns
+        type: INTEGER
+        default: NULL
+      - name: table_path
+        type: VARCHAR
+        default: NULL
+      - name: creation_date
+        type: TIMESTAMPTZ
+        default: NOW()
+  - table_name: enriched_columns
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: column_name
+        type: VARCHAR
+        default: NULL
+      - name: column_description
+        type: VARCHAR
+        default: NULL
+      - name: column_usage
+        type: VARCHAR
+        default: NULL
+        notes: key/target/feature/not_used
+      - name: column_type
+        type: VARCHAR
+        default: NULL
+        notes: date/categorical/numeric
+  - table_name: feature_stores
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_store_id
+        type: VARCHAR
+        default: NULL
+      - name: status
+        type: VARCHAR
+        default: "ON PROGRESS"
+        notes: on_progress/finished/failed
+      - name: table_path
+        type: VARCHAR
+        default: NULL
+      - name: num_of_features
+        type: INTEGER
+        default: NULL
+      - name: creation_date
+        type: TIMESTAMPTZ
+        default: NOW()
+  - table_name: feature_details
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_store_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_name
+        type: VARCHAR
+        default: NULL
+      - name: feature_description
+        type: VARCHAR
+        default: NULL
+      - name: feature_table_path
+        type: VARCHAR
+        default: NULL
+  - table_name: feature_creation_pipeline
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_store_id
+        type: VARCHAR
+        default: NULL
+      - name: pipeline_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_name
+        type: VARCHAR
+        default: NULL
+      - name: function_name
+        type: VARCHAR
+        default: NULL
+        notes: filter/aggregate/shift/date_conversion
+      - name: input_param_value
+        type: JSONB
+        default: NULL
+      - name: sequence_num
+        type: INTEGER
+        default: NULL
+  - table_name: models
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_store_id
+        type: VARCHAR
+        default: NULL
+      - name: pipeline_id
+        type: VARCHAR
+        default: NULL
+      - name: model_id
+        type: VARCHAR
+        default: NULL
+      - name: status
+        type: VARCHAR
+        default: "ON PROGRESS"
+      - name: algorithm_used
+        type: VARCHAR
+        default: NULL
+      - name: total_records
+        type: INTEGER
+        default: NULL
+      - name: training_perc_size
+        type: FLOAT
+        default: NULL
+      - name: training_evaluation
+        type: JSONB
+        default: NULL
+        notes: auc+accuracy+precision+recall
+      - name: testing_evaluation
+        type: JSONB
+        default: NULL
+        notes: auc+accuracy+precision+recall
+      - name: validation_records
+        type: INTEGER
+        default: NULL
+      - name: validation_evaluation
+        type: JSONB
+        default: NULL
+        notes: auc+accuracy+precision+recall
+      - name: creation_date
+        type: TIMESTAMPTZ
+        default: NOW()
+  - table_name: predictions
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_store_id
+        type: VARCHAR
+        default: NULL
+      - name: pipeline_id
+        type: VARCHAR
+        default: NULL
+      - name: model_id
+        type: VARCHAR
+        default: NULL
+      - name: table_path
+        type: VARCHAR
+        default: NULL
+      - name: status
+        type: VARCHAR
+        default: "ON PROGRESS"
+      - name: creation_date
+        type: TIMESTAMPTZ
+        default: NOW()
+      
+      

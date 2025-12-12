@@ -1,0 +1,2 @@
+project_id,dataset_id,feature_store_id,feature_name,feature_description,feature_file_path
+0000-0000-0000-0000,0000-0000-0000-0000,0000-0000-0000-0000,Value_Last_14Days_Max,Maximum value from column named Value within 4 weeks ago until cutoff date,project_0000-0000-0000-0000/feature_details_sdsdsd.csv
