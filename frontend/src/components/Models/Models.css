@@ -1,0 +1,191 @@
+
+
+
+.top-header {
+  position: relative;        /* IMPORTANT */
+  width: 100%;
+}
+
+.header-banner {
+  width: 100%;
+  display: block;
+}
+
+.header-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+
+  text-align: center;
+  color: white;
+  padding-top: 50px;
+}
+
+.header-title {
+    font-family: IBM Plex Sans;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 25px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+}
+
+.header-title-span {
+    font-family: IBM Plex Sans;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 25px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+
+}
+
+
+.header-sub-text {
+    font-family: IBM Plex Sans;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 20px;
+    letter-spacing: 0.16px;
+    vertical-align: middle;
+
+}
+
+
+.header-sub {
+  position: absolute;
+  top: 16px;
+  left: 10%;
+  max-width: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: white;
+  font-size: 1.1rem;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.overlay-logo {
+  height: 30px;
+  width: auto;
+}
+
+.footer {
+    color: var(--mandiri-grey-02, #333);
+    font-family: "IBM Plex Sans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding: 1.5rem;
+    text-align: center; /* Centers the text horizontally */
+}
+
+
+
+.breadcrumb {
+    background-color: #E0E0E0;
+    padding: 1.5rem;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.table-title {
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 48px;
+    
+}
+
+.table-title h2 {
+    color: #000;
+    font-family: "IBM Plex Sans";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px; /* 108.333% */
+    letter-spacing: 0.16px;
+    
+}
+
+.table-title .table-info {
+    color: var(--Text-text-secondary, #525252);
+    padding-top: 14px;
+    font-family: "IBM Plex Sans";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+    letter-spacing: 0.16px;
+}
+
+.table-content {
+    padding-top: 32px;
+}
+
+
+.overview {
+    display: flex;
+    width: 95%;
+    height: auto;
+    justify-content: flex-start;
+    object-fit: cover;
+    margin: 32px auto;      /* centers horizontally */
+    background-color: #fff;
+    flex-direction: column;   /* 👈 THIS is the key */
+    opacity: 1;
+
+    border-radius: 8px;
+    border: 1px solid #D0D0D0;    /* choose color as needed */
+
+    overflow: hidden;            /* ensures rounded corners apply to image */
+
+}
+
+.overview h2 {
+    width: 100%; 
+    font-family: "Myriad Pro", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 18px;
+    letter-spacing: 0.14em;   /* 10% = 0.10em (Figma often rounds; 0.14 if specified) */
+    vertical-align: middle;
+    text-align: left;
+    margin: 0;
+    color: #1868AB;
+    padding-top: 30px;
+    padding-bottom: 40px;
+    
+}
+
+.overview h3 {
+    width: 100%; 
+    font-family: "Myriad Pro", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 14px;
+    letter-spacing: 0.14em;   /* 10% = 0.10em (Figma often rounds; 0.14 if specified) */
+    vertical-align: middle;
+    text-align: left;
+    margin: 0;
+    color: #1868AB;
+    padding-top: 30px;
+    padding-bottom: 40px;
+    
+}
+
+.overview .form-group {
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 40px;
+}

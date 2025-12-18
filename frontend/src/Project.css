@@ -1,0 +1,94 @@
+
+.lc-details {
+    padding-top: 48px;
+    color: #000;
+    font-family: "IBM Plex Sans";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px; /* 108.333% */
+    letter-spacing: 0.16px;
+}
+
+.lc-details .lc-overview {
+    background: #FFF;
+    flex-shrink: 0;
+    margin-top: 32px;
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 24px;
+    display: flex;
+}
+
+.lc-details .lc-overview .lc-overview-img {
+    margin-left: 32px;
+    margin-top: 24px;
+    width: 5%;
+    height: 10%;
+}
+
+.lc-details .lc-overview .lc-overview-title {
+    color: var(--Text-text-secondary, #525252);
+    font-family: "IBM Plex Sans";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 20px; /* 111.111% */
+}
+
+.lc-details .lc-overview .lc-overview-result h2 {
+    color: #000;
+    font-family: "IBM Plex Sans";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px; /* 108.333% */
+    letter-spacing: 0.16px;
+}
+
+.lc-details .lc-overview .lc-overview-result .lc-overview-result-name {
+    color: var(--Text-text-secondary, #525252);
+    font-family: "IBM Plex Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+}
+
+.lc-details .lc-overview .lc-overview-result .lc-overview-result-value {
+    color: var(--Text-text-secondary, #525252);
+    font-family: "IBM Plex Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 142.857% */
+    margin-left: 73px;
+    
+}
+
+.tab-page {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    background: var(--color-bg-gradient-01, linear-gradient(180deg, #F4F4F4 0%, #C7DAFF 129.11%));
+}
+
+.content-page {
+    padding-top: 32px;
+}
+
+.tab-page h2 {
+    color: #000;
+    font-family: "IBM Plex Sans";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px; /* 108.333% */
+    letter-spacing: 0.16px;
+}
+
+.content-page .row-section {
+    margin-bottom: 32px;
+}

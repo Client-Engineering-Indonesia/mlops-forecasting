@@ -1,0 +1,57 @@
+
+.content-layout {
+    
+    border-radius: 0.5rem;
+    border: 1px solid var(--Border-border-subtle-00, #E0E0E0);
+    background: #FFF;
+    margin-top: 2rem;
+
+}
+
+.content-layout-title {
+    color: var(--Sequential-mono-discrete-Blue-80, #002D9C);
+    font-family: "IBM Plex Sans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 2rem; /* 228.571% */
+    letter-spacing: 0.0875rem;
+}
+
+.upload-grid-button {
+    border-radius: 0.25rem;
+    border: 1px solid var(--Border-border-subtle-01, #E0E0E0);
+    background: #FFF;
+    width: 100%;
+    height: 4rem;
+    flex-shrink: 0;
+}
+
+.upload-grid-title {
+    color: var(--mandiri-grey-02, #333);
+    font-family: "IBM Plex Sans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.upload-add-element {
+    display: flex;
+    align-items: center; /* Centers vertically */
+    justify-content: center; /* Centers horizontally (optional) */
+    height: 100%; /* Full height of the parent container */
+    color: var(--Text-text-placeholder, #A8A8A8);
+    font-family: "IBM Plex Sans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding-left: 0.675rem;
+}
+
+.upload-grid-button {
+    display: flex;
+    align-items: center; /* Centers vertically */
+}
+

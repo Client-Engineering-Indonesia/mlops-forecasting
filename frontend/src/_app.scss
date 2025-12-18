@@ -1,0 +1,33 @@
+@use '@carbon/react/scss/colors';
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/type' as *;
+@use '@carbon/react/scss/breakpoint' as *;
+@use '@carbon/react';
+
+@use '@carbon/themes/scss/themes' as *;
+@use '@carbon/themes';
+
+/* system preference theme by default */
+:root {
+  @include themes.theme($g10);
+}
+
+html {
+    width: 100vw;
+    height: 100vh;
+}
+
+.cds--css-grid {
+    padding: 0 0 !important;
+}
+
+.sidenav {
+    --cds-grid-mode-start: 0 !important;
+    --cds-grid-mode-end: 0 !important;
+    margin-left: 0 !important;
+}
+
+.cds--tabs {
+    justify-content: center !important;
+    font-family: "Myriad Pro", sans-serif, sans-serif;
+}

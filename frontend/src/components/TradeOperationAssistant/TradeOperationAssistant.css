@@ -1,0 +1,146 @@
+@keyframes fade-slide {
+    0% {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.cds--form-item {
+    background: #F4F4F4;
+}
+
+.cds--text-area {
+    background: #F4F4F4;
+}
+
+.overlay-image {
+    justify-content: flex-end; /* Push the button to the right */
+    display: flex; /* Position the image relative to the container */
+    margin: 0.3rem;
+}
+
+.chat-box {
+    height: 41rem; /* Set a static height */
+    overflow-y: auto; /* Enable vertical scrolling when content overflows */
+    border: 1px solid #ccc; /* Optional: Add a border for visibility */
+    padding: 10px; /* Optional: Add padding */
+    box-sizing: border-box; /* Ensure padding is included within height */
+}
+
+.chat-header {
+width: 100%; /* Set the width of the div */
+height: 50px; /* Set the height of the div */
+background: var(--gradient-blue-teal, linear-gradient(90deg, #0400E6 -4.31%, #5C97FF 42.51%, #07ABA9 87.07%));
+
+/* Menu (Transparent) */
+box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.30);
+
+background-size: cover; /* Scale the image to cover the entire div */
+background-repeat: no-repeat; /* Prevent tiling of the image */
+background-position: center; /* Center the image in the div */
+
+display: flex; /* Enable Flexbox */
+justify-content: space-between; /* Push items to opposite ends */
+align-items: center; /* Vertically center the items */
+}
+
+.chat-header-title {
+    display: flex;
+}
+
+.chat-content {
+    padding: 1rem;
+}
+
+.chat-header-title-text {
+    color: #FFF;
+    font-family: "IBM Plex Sans";
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    padding-left: 0.75rem;
+}
+
+.chat-input {
+    border-top: 1px solid var(--mandiri-grey-01, #9EA2A2);
+    background: #F4F4F4;
+    padding: 0.5rem;
+    border: 1px solid #ccc; /* Optional: Add a border for visibility */
+    box-sizing: border-box; /* Ensure padding is included within height */
+    position: flex; /* Create a relative container for positioning the overlay */
+
+}
+
+.chat-footer {
+    border-top: 1px solid var(--mandiri-grey-01, #9EA2A2);
+    padding: 0.5rem;
+    height: 3rem;
+    border: 1px solid #ccc; /* Optional: Add a border for visibility */
+    box-sizing: border-box; /* Ensure padding is included within height */
+    align-items: center; /* Vertically center the items */
+    display: flex;
+
+    color: #333;
+    font-family: "Myriad Pro";
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.bold {
+    font-weight: bold; /* Makes text bold */
+}
+
+.chat-content-user {
+    padding-top: 0.5rem;
+}
+
+.chat-content-response {
+    padding-top: 0.5rem;
+}
+
+.chat-content-response-time {
+    color: var(--text-text-02, var(--Text-text-02, #525252));
+    font-family: "IBM Plex Sans";
+    font-size: 0.625rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.chat-content-response-text {
+    color: var(--Text-text-primary, #161616);
+    font-family: "IBM Plex Sans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding-right: 1rem;
+}
+
+.cds--form-item {
+    padding: 1rem;
+}
+
+.login-container {
+    max-width: 100%;
+    margin: 10px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .login-container h2 {
+font-family: "IBM Plex Sans";
+font-size: 1rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}

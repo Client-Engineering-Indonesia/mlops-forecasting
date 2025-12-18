@@ -1,0 +1,103 @@
+/* General Markdown Styling */
+.markdown-body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .markdown-body h1, 
+  .markdown-body h2, 
+  .markdown-body h3 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .markdown-body h1 {
+    font-size: 2em;
+    color: #4A90E2;
+  }
+  
+  .markdown-body h2 {
+    font-size: 1.75em;
+    color: #4A90E2;
+  }
+  
+  .markdown-body h3 {
+    font-size: 1.5em;
+    color: #4A90E2;
+  }
+  
+  /* Table Styling */
+  .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .markdown-body th,
+  .markdown-body td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .markdown-body th {
+    background-color: #f4f4f9;
+    font-weight: bold;
+  }
+  
+  .markdown-body tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .markdown-body tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* List Styling */
+  .markdown-body ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    padding-left: 20px;
+  }
+  
+  .markdown-body ul li {
+    margin-bottom: 8px;
+  }
+  
+  .markdown-body ol {
+    list-style-type: decimal;
+    margin-left: 20px;
+    padding-left: 20px;
+  }
+  
+  .markdown-body ol li {
+    margin-bottom: 8px;
+  }
+  
+  /* Link Styling */
+  .markdown-body a {
+    color: #4A90E2;
+    text-decoration: none;
+  }
+  
+  .markdown-body a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Code Block Styling */
+  .markdown-body pre {
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+  }
+  
+  .markdown-body code {
+    font-family: 'Courier New', Courier, monospace;
+    background: #f5f5f5;
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+  
