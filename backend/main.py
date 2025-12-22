@@ -8,10 +8,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:8443", "http://127.0.0.1:8443", "http://150.240.70.64:8080", "http://127.0.0.1:8000"],  # Update with the address of your React app
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=True,
 )
 
 @app.get("/")

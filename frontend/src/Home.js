@@ -50,6 +50,71 @@ function Home() {
   const BE_URL = process.env.REACT_APP_API_URL;
   //console.log("BE_URL: " + BE_URL); // should print http://localhost:8000
 
+  const [projects, setProjects] = useState([]);
+  const [error, setError] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+
+  async function listProjects() {
+    setLoading(true);
+    const response = await fetch(BE_URL + "/list_projects");
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch projects");
+    }
+
+    setLoading(false);
+
+    return await response.json();
+  }
+
+  useEffect(() => {
+    listProjects()
+      .then(setProjects)
+      .catch(err => setError(err.message));
+  }, []);
+
+  if (error) return <p>Error: {error}</p>;
+
+  async function createProject(e) {
+    e.preventDefault(); // prevent page reload
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${BE_URL}/create_project`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          project_name: projectName,
+          project_description: projectDescription,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create project");
+      }
+
+      // Clear form
+      setProjectName("");
+      setProjectDescription("");
+
+      // Refresh list
+      const updatedProjects = await listProjects();
+      setProjects(updatedProjects);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="main-page">
       <div className="top-header">
@@ -76,11 +141,25 @@ function Home() {
 
           <h2>CREATE NEW PROJECT</h2>
 
-          <Form>
+          <Form onSubmit={createProject}>
             <Stack gap={7}>
               <FormGroup legendText="Input project details here">
-                <TextInput id="project-name" labelText="Project Name" placeholder="Project Name" />
-                <TextArea labelText="Project Description" placeholder="Project Description" id="project-description" rows={4} />
+                <TextInput
+                  id="project-name"
+                  labelText="Project Name"
+                  placeholder="Project Name"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                />
+
+                <TextArea
+                  id="project-description"
+                  labelText="Project Description"
+                  placeholder="Project Description"
+                  rows={4}
+                  value={projectDescription}
+                  onChange={(e) => setProjectDescription(e.target.value)}
+                />
               </FormGroup>
 
               <Button type="submit" className="some-class">
@@ -92,6 +171,19 @@ function Home() {
           </Form>
         </div>
       </div>
+
+      {loading == true && (
+        <Loading
+          active
+          className="some-class"
+          description="Loading"
+          withOverlay={loading}
+        />
+      )}
+
+      
+
+      
 
       <div className="overview" style={{ display: 'flex', justifyContent: 'center' }}>
 
@@ -123,23 +215,18 @@ function Home() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  0000-0000
-                </TableCell>
-                <TableCell>
-                  RPS
-                </TableCell>
-                <TableCell>
-                  Forecast RPS
-                </TableCell>
-                <TableCell>
-                  2025-10-01 10:00:05
-                </TableCell>
-                <TableCell>
-                  <Link href="#">View</Link>
-                </TableCell>
+              {projects.map((p, i) => (
+                <TableRow>
+                  <TableCell>{p.project_id}</TableCell>
+                  <TableCell>{p.project_name}</TableCell>
+                  <TableCell>{p.project_description}</TableCell>
+                  <TableCell>{p.creation_date}</TableCell>
+                  <TableCell>
+                    <Link href={`/project?project_id=${p.project_id}`}>View</Link>
+                  </TableCell>
               </TableRow>
+              ))}
+              
             </TableBody>
           </Table>
         </div>

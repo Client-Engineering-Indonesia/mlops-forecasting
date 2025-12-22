@@ -24,11 +24,34 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Smart Forecasting Tool</title>
+    <script>
+      window.wxOConfiguration = {
+        orchestrationID: "20240412-0953-5360-4080-1e20c9237d4e_20250716-0744-0171-9068-76c0bcc785f2",
+        hostURL: "https://dl.watson-orchestrate.ibm.com",
+        rootElementID: "wxo",
+        chatOptions: {
+            agentId: "0dcdea7b-f9bd-45af-8369-a1636e12de21", 
+        }
+      };
+      setTimeout(function () {
+        const script = document.createElement('script');
+        script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+        script.addEventListener('load', function () {
+            wxoLoader.init();
+        });
+        document.head.appendChild(script);
+      }, 0);                     
+    </script>
+
+    <style>
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <div id="wxo-container"><div id="wxo"></div></div>
+    
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

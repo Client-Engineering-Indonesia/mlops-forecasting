@@ -56,123 +56,36 @@ function Project() {
 
     const BE_URL = process.env.REACT_APP_API_URL;
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [currentPage, setCurrentPage] = useState('main');
-    const [username, setUsername] = useState(null);
-    const [contentHeaders, setContentHeaders] = useState(["Code", "Description", "Value"]);
-    const [fileHeaders, setFileHeaders] = useState(["Filename", "Type", "Total Pages", "Action"]);
-    const [ruleFileHeaders, setRuleFileHeaders] = useState(["Regulation", "Action"]);
-    const [complianceHeaders, setComplianceHeaders] = useState(["Requirement Statement", "Source", "Document Checklist Score", "Item Checklist Score", "Total Score", "# Equations Found", "Evidence"]);
-    const [mathEquations, setMathEquations] = useState(["Requirement Statement", "Equation", "Output Variable", "Calculated When", "References"]);
     const navigate = useNavigate();
 
-
-
     const [searchParams] = useSearchParams();
-    const applicationId = searchParams.get("application_id"); // Access ?file=yourfilename.pdf
+    const projectId = searchParams.get("project_id"); // Access ?file=yourfilename.pdf
 
+    const [projects, setProjects] = useState([]);
+    const [error, setError] = useState(null);
 
-    const [basicInfo, setBasicInfo] = useState(null);
-    const [applicationName, setApplicationName] = useState(null);
-    const [applicationContent, setApplicationContent] = useState([]);
-    const [applicationLogs, setApplicationLogs] = useState([]);
-    const [applicationFiles, setApplicationFiles] = useState([]);
-    const [ruleFiles, setRuleFiles] = useState([]);
-    const [rawComplianceResult, setRawComplianceResult] = useState([]);
-    const [complianceResult, setComplianceResult] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const [modalStateDoc, setModalStateDoc] = useState(null);
-    const [modalContentDoc, setModalContentDoc] = useState([]);
-    const [modalStateReq, setModalStateReq] = useState(null);
-    const [modalContentReq, setModalContentReq] = useState([]);
-    const [modalContentEq, setModalContentEq] = useState([]);
+    async function getProject() {
+        setLoading(true);
+        const response = await fetch(BE_URL + "/get_project_by_projectid?project_id=" + projectId);
 
-    const [loadingStatus, setLoadingStatus] = useState(false);
+        if (!response.ok) {
+        throw new Error("Failed to fetch projects");
+        }
 
+        setLoading(false);
 
-
+        return await response.json();
+    }
+    
     useEffect(() => {
-        const fetchApplicationData = async () => {
-            try {
-
-                setLoadingStatus(true);
-
-                const responseApplication = await axios.get(BE_URL + "/get_application_detail?application_id=" + applicationId, {
-                    application_id: applicationId
-                });
-
-                if (responseApplication.status === 200) {
-                    console.log("response: ", responseApplication.data.compliance_check)
-                    setBasicInfo(responseApplication.data.basic_info);
-                    setApplicationContent(responseApplication.data.application_content);
-                    setApplicationLogs(responseApplication.data.logs);
-                    setApplicationFiles(responseApplication.data.files);
-                    setRuleFiles(responseApplication.data.rule_files);
-
-                    setRawComplianceResult(responseApplication.data.compliance_check);
-
-                    setComplianceResult(responseApplication.data.compliance_check.map((item, idx) => ({
-                        assessment_id: item.assessment_id,
-                        requirement_source: item.requirement_source,
-                        requirement_statement: item.requirement_statement,
-                        document_checklist_score: (item.document_checklist_score * 100),
-                        requirement_item_chek_score: (item.requirement_item_chek_score * 100),
-                        total_score: (item.total_score * 100),
-                        supporting_documents: item.supporting_documents,
-                        requirement_items: item.requirement_items,
-                        math_equations: item.math_equations,
-                        action: (
-                            <>
-                                <Button kind="ghost" size="sm" renderIcon={Document} style={{ marginLeft: '1rem' }}
-                                    onClick={() => setModalContentDoc((prevViewModalState) => ({
-                                        ...prevViewModalState,
-                                        [item.assessment_id + "_doc"]: true,
-                                    }))}>Supp. Doc.</Button> |
-                                <Button kind="ghost" size="sm" renderIcon={List} style={{ marginLeft: '1rem' }}
-                                    onClick={() => setModalContentReq((prevViewModalState) => ({
-                                        ...prevViewModalState,
-                                        [item.assessment_id + "_req"]: true,
-                                    }))}>Req. Items</Button> |
-                                <Button kind="ghost" size="sm" renderIcon={Calculation} style={{ marginLeft: '1rem' }}
-                                    onClick={() => setModalContentEq((prevViewModalState) => ({
-                                        ...prevViewModalState,
-                                        [item.assessment_id + "_eq"]: true,
-                                    }))}>Math Eq.</Button>
-                            </>
-                        )
-                    })));
-
-                    responseApplication.data.compliance_check.map((item, index) => {
-                        // console.log("compliance check", item);
-                        setModalContentDoc((prevViewModalState) => ({
-                            ...prevViewModalState,
-                            [item.assessment_id + "_doc"]: false,
-                        }));
-
-                        setModalContentReq((prevViewModalState) => ({
-                            ...prevViewModalState,
-                            [item.assessment_id + "_req"]: false,
-                        }));
-
-                        setModalContentEq((prevViewModalState) => ({
-                            ...prevViewModalState,
-                            [item.assessment_id + "_eq"]: false,
-                        }));
-                    });
-
-
-
-
-                }
-            } catch (error) {
-                console.log("error", error);
-            }
-
-            setLoadingStatus(false);
-        };
-
-        fetchApplicationData();
-    }, []);
+        getProject()
+          .then(setProjects)
+          .catch(err => setError(err.message));
+      }, []);
+    
+      if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="main-page">
@@ -192,10 +105,19 @@ function Project() {
             <div className="breadcrumb">
                 <Breadcrumb>
                     <BreadcrumbItem href="/home">Home</BreadcrumbItem>
-                    <BreadcrumbItem href="/project">Project Detail</BreadcrumbItem>
+                    <BreadcrumbItem href={`/project?project_id=${projectId}`}>Project Detail</BreadcrumbItem>
                 </Breadcrumb>
             </div>
             <div className="overview" style={{ display: 'flex', justifyContent: 'center' }}>
+
+                {loading == true && (
+                    <Loading
+                        active
+                        className="some-class"
+                        description="Loading"
+                        withOverlay={loading}
+                    />
+                )}
 
                 <div className='form-group'>
 
@@ -226,16 +148,16 @@ function Project() {
                                 <TableBody>
                                     <TableRow>
                                         <TableCell>
-                                            0000-0000
+                                            {projects.project_id}
                                         </TableCell>
                                         <TableCell>
-                                            RPS
+                                            {projects.project_name}
                                         </TableCell>
                                         <TableCell>
-                                            Forecast RPS
+                                            {projects.project_description}
                                         </TableCell>
                                         <TableCell>
-                                            2025-10-01 10:00:05
+                                            {projects.creation_date}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
