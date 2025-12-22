@@ -135,7 +135,10 @@ def list_models_endpoint(project_id: str):
 
 @app.post("/projects/{project_id}/models/train")
 def train_model_postgres(project_id: str, req: TrainRequest):
-    return data_service.train_model(req.dataset_id, req.selection_id, req.project_id, req.task_type)
+    try:
+        return data_service.train_model(req.dataset_id, req.selection_id, req.project_id, req.task_type)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Training failed: {str(e)}")
 
 class UploadCOSResponse(BaseModel):
     status: str = Field(..., example="success")

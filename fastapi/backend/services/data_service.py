@@ -230,7 +230,7 @@ def get_feature_selection(run_id: str):
     finally:
         db.close()
 
-def save_model_metadata(model_id: str, name: str, project_id: str, dataset_id: str, selection_id: str, task: str, target: str, metrics: dict):
+def save_model_metadata(model_id: str, name: str, project_id: str, dataset_id: str, selection_id: str, task: str, target: str, metrics: dict, artifact_path: str = None, cos_path: str = None):
     db = SessionLocal()
     try:
         entry = TrainedModel(
@@ -241,7 +241,9 @@ def save_model_metadata(model_id: str, name: str, project_id: str, dataset_id: s
             selection_id=selection_id,
             task_type=task,
             target_column=target,
-            metrics=metrics
+            metrics=metrics,
+            artifact_path=artifact_path,
+            cos_path=cos_path
         )
         db.add(entry)
         db.commit()
@@ -610,7 +612,7 @@ def train_model(dataset_id: str, selection_id: str, project_id: str, task_type: 
         
         # 3. Train with XGBoost
         from sklearn.model_selection import train_test_split
-        from sklearn.metrics import accuracy_score, f1_score, mean_squared_error, r2_score, precision_score, recall_score
+        from sklearn.metrics import accuracy_score, f1_score, mean_squared_error, r2_score, precision_score, recall_score, mean_absolute_error
         import xgboost as xgb
         import pickle
         
@@ -642,7 +644,8 @@ def train_model(dataset_id: str, selection_id: str, project_id: str, task_type: 
             )
             model.fit(X_train, y_train)
             preds = model.predict(X_test)
-            metrics['rmse'] = mean_squared_error(y_test, preds, squared=False)
+            metrics['rmse'] = np.sqrt(mean_squared_error(y_test, preds))
+            metrics['mae'] = mean_absolute_error(y_test, preds)
             metrics['r2'] = r2_score(y_test, preds)
 
         # 4. Save Model Artifact as pickle
@@ -660,18 +663,18 @@ def train_model(dataset_id: str, selection_id: str, project_id: str, task_type: 
             logger.warning(f"COS upload failed, model only available locally")
 
         # 6. Save Model Metadata
-        save_model_metadata(model_id, f"{task_type.title()}Model-{model_id[:6]}", project_id, dataset_id, selection_id, task_type, target, metrics)
-        
-        # 7. Update artifact path and COS path
-        session = SessionLocal()
-        try:
-            m = session.query(TrainedModel).filter_by(id=model_id).first()
-            if m:
-                m.artifact_path = artifact_path
-                m.cos_path = cos_path
-                session.commit()
-        finally:
-            session.close()
+        save_model_metadata(
+            model_id, 
+            f"{task_type.title()}Model-{model_id[:6]}", 
+            project_id, 
+            dataset_id, 
+            selection_id, 
+            task_type, 
+            target, 
+            metrics,
+            artifact_path=artifact_path,
+            cos_path=cos_path
+        )
         
         logger.info(f"XGBoost model trained {model_id} with metrics {metrics}")
         
