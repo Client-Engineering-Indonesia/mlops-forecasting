@@ -151,7 +151,7 @@ def create_basic_feature_store(payload: SampleDataSchema):
     # Step 2: Design feature store
     llm_response2 = multiprocess_llm_answer({
         "input_prompt": f"Get sample of sql statement. Then, design feature store based on that sql sample "\
-            f" using source table as below:\n{dataset['base_data_table_path']}."\
+            f" using source table as below:\n{dataset['raw_data_table_path']}."\
                 "Don't create feature store in database at this state.",
         "thread_id": llm_response1["thread_id"],
     })
