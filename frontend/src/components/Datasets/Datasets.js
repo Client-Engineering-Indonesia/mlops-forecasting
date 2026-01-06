@@ -223,8 +223,9 @@ function Datasets() {
 
                     {datasets.map((ds, i) => (
                         <Accordion>
-                            <AccordionItem title={ds.table_path}>
+                            <AccordionItem title={ds.raw_data_table_path}>
                                 <p>Dataset ID: {ds.dataset_id}</p>
+                                <p>Base Data Table Name: {ds.base_data_table_path}</p>
                                 <p>Training Horizon (in weeks): {ds.n_past_week_for_training}</p>
                                 <p>Forecasting Horizon (in weeks): {ds.n1_next_week_for_prediction}</p>
                                 <p>Maximum Forecasting Horizon (in weeks): {ds.n2_next_week_for_prediction}</p>

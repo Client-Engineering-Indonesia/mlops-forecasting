@@ -33,12 +33,21 @@ tables:
       - name: num_columns
         type: INTEGER
         default: NULL
+      - name: raw_data_table_path
+        type: VARCHAR
+        default: NULL
       - name: target_data_table_path
         type: VARCHAR
         default: NULL
       - name: base_data_table_path
         type: VARCHAR
         default: NULL
+      - name: training_data_table_path
+        type: VARCHAR
+        default: NULL
+      - name: is_test_file
+        type: VARCHAR
+        default: "N"
       - name: creation_date
         type: TIMESTAMPTZ
         default: NOW()
@@ -120,29 +129,6 @@ tables:
       - name: creation_date
         type: TIMESTAMPTZ
         default: NOW()
-  - table_name: feature_creation_pipeline
-    columns:
-      - name: project_id
-        type: VARCHAR
-        default: NULL
-      - name: dataset_id
-        type: VARCHAR
-        default: NULL
-      - name: feature_name
-        type: VARCHAR
-        default: NULL
-      - name: sql_statement
-        type: VARCHAR
-        default: NULL
-      - name: sequence_num
-        type: INTEGER
-        default: NULL
-      - name: table_path
-        type: VARCHAR
-        default: NULL
-      - name: creation_time
-        type: TIMESTAMPTZ
-        default: "NOW()"
   - table_name: models
     columns:
       - name: project_id
@@ -158,6 +144,15 @@ tables:
         type: VARCHAR
         default: NULL
       - name: model_id
+        type: VARCHAR
+        default: NULL
+      - name: training_pred_file_path
+        type: VARCHAR
+        default: NULL
+      - name: validation_pred_file_path
+        type: VARCHAR
+        default: NULL
+      - name: model_file_path
         type: VARCHAR
         default: NULL
       - name: status
@@ -187,7 +182,30 @@ tables:
         type: JSONB
         default: NULL
         notes: auc+accuracy+precision+recall
-      - name: creation_date
+      - name: creation_time
+        type: TIMESTAMPTZ
+        default: NOW()
+  - table_name: selected_features
+    columns:
+      - name: project_id
+        type: VARCHAR
+        default: NULL
+      - name: dataset_id
+        type: VARCHAR
+        default: NULL
+      - name: feature_store_id
+        type: VARCHAR
+        default: NULL
+      - name: pipeline_id
+        type: VARCHAR
+        default: NULL
+      - name: model_id
+        type: VARCHAR
+        default: NULL
+      - name: column_name
+        type: VARCHAR
+        default: NULL
+      - name: creation_time
         type: TIMESTAMPTZ
         default: NOW()
   - table_name: predictions
@@ -207,7 +225,7 @@ tables:
       - name: model_id
         type: VARCHAR
         default: NULL
-      - name: table_path
+      - name: pred_file_path
         type: VARCHAR
         default: NULL
       - name: status

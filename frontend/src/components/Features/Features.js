@@ -67,14 +67,9 @@ function Features() {
     const [loading, setLoading] = useState(false);
 
     async function getDatasets() {
-
-        setLoading(true);
-
         const res = await fetch(`${BE_URL}/get_datasets_by_projectid?project_id=${projectId}`);
         console.log("length: " + res.length)
         if (!res.ok) throw new Error("Failed to fetch datasets");
-
-        setLoading(false);
 
         return await res.json();
     }
@@ -113,29 +108,42 @@ function Features() {
             }
         );
 
+        window.location.reload();
+
         setLoading(false);
     }
-
-    useEffect(() => {
-        getDatasets()
-            .then((data) => setDatasets(normalizeDatasets(data)))
-            .catch((err) => setError(err.message));
-    }, [projectId]);
 
     async function getFeatures() {
 
         const res = await fetch(`${BE_URL2}/get_features_by_projectid?project_id=${projectId}`);
-        console.log("length: " + res.length)
         if (!res.ok) throw new Error("Failed to fetch datasets");
 
         return await res.json();
     }
 
     useEffect(() => {
-        getFeatures()
-            .then((data) => setFeatures(data))
-            .catch((err) => setError(err.message));
+        async function loadAll() {
+            try {
+                setLoading(true);
+
+                const [datasetsData, featuresData] = await Promise.all([
+                    getDatasets(),
+                    getFeatures(),
+                ]);
+
+                setDatasets(normalizeDatasets(datasetsData));
+                setFeatures(featuresData);
+
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadAll();
     }, [projectId]);
+
+    
 
     return (
         <div className="sub-main-page">
@@ -163,7 +171,7 @@ function Features() {
                                         />
                                         {datasets.map((ds, i) => (
                                             <SelectItem
-                                                text={ds.base_data_table_path}
+                                                text={ds.raw_data_table_path}
                                                 value={ds.dataset_id}
                                             />
                                         ))}

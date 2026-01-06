@@ -1,0 +1,171 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BMRI_Data_Engineer",
+        "description": "A wrapper written using Python FastAPI framework to support Bank Mandiri Data Engineer",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://tools-feature-store.1md1m4nn4bi8.us-south.codeengine.appdomain.cloud"
+        }
+    ],   
+    "paths": {
+        "/get_sample_sql_statement": {
+            "get": {
+                "summary": "BMRI_get_sample_sql_statement",
+                "description": "Get sample of SQL Statement to create feature store",
+                "operationId": "BMRI_get_sample_sql_statement",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "compiled_features_sql": {
+                                            "type": "object",
+                                            "properties": {
+                                                "sql_statement": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "0": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/create_feature_store": {
+            "post": {
+                "summary": "BMRI_create_feature_store",
+                "operationId": "BMRI_create_feature_store",
+                "description": "Create feature store",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "project_id",
+                                    "dataset_id",
+                                    "table_name",
+                                    "sql_statement"
+                                ],
+                                "properties": {
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "Project ID where feature store is created"
+                                    },
+                                    "dataset_id": {
+                                        "type": "string",
+                                        "description": "Dataset ID where feature store is created"
+                                    },
+                                    "table_name": {
+                                        "type": "string",
+                                        "description": "Destination table name for feature store"
+                                    },
+                                    "sql_statement": {
+                                        "type": "string",
+                                        "description": "SQL Statement used to create feature store"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "table_path": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/get_table_sample_data": {
+            "post": {
+                "summary": "BMRI_get_table_sample_data",
+                "operationId": "BMRI_get_table_sample_data",
+                "description": "Get sample of data from dataset ig given",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "dataset_id"
+                                ],
+                                "properties": {
+                                    "dataset_id": {
+                                        "type": "string",
+                                        "description": "Dataset ID where feature store is created"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sample_data": {
+                                            "type": "array"
+                                        },
+                                        "target_column_name": {
+                                            "type": "array"
+                                        },
+                                        "used_columns_for_feature_generation": {
+                                            "type": "array"
+                                        },
+                                        "key_column_name": {
+                                            "type": "array"
+                                        },
+                                        "date_column_name": {
+                                            "type": "array"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        }
+    }
+}

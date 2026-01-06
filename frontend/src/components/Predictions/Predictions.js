@@ -39,21 +39,125 @@ import {
     View,
     AiLaunch,
     TrashCan,
-    Notification
+    Notification,
+    Model
 } from '@carbon/icons-react';
 
 
 import './Predictions.css'
 
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import axios from 'axios';
 
 
 function Predictions() {
 
     const BE_URL = process.env.REACT_APP_API_URL;
+    const BE_URL2 = process.env.REACT_APP_API_URL2;
+    const BE_URL3= process.env.REACT_APP_API_URL3;
+
+    const [searchParams] = useSearchParams();
+    const projectId = searchParams.get("project_id"); // Access ?file=yourfilename.pdf
+
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const [models, setModels] = useState([]);
+    const [predictions, setPredictions] = useState([]);
+
+    const [selectedModel, setSelectedModel] = useState("");
+
     //console.log("BE_URL: " + BE_URL); // should print http://localhost:8000
+
+    async function getModels() {
+
+        const res = await fetch(`${BE_URL3}/get_models_by_projectid?project_id=${projectId}`);
+        console.log("length: " + res.length)
+        if (!res.ok) throw new Error("Failed to fetch datasets");
+
+        return await res.json();
+    }
+
+    async function getPredictions() {
+
+        const res = await fetch(`${BE_URL3}/get_predictions?project_id=${projectId}`);
+        console.log("length: " + res.length)
+        if (!res.ok) throw new Error("Failed to fetch datasets");
+
+        return await res.json();
+    }
+    
+
+    async function getPredictionResult() {
+
+        setLoading(true);
+
+        const formData = new FormData();
+        formData.append("file", selectedFile); // must match FastAPI param name: file
+        formData.append("model_id", selectedModel);
+
+        try {
+            
+
+            // Use axios for multipart; do NOT manually set Content-Type with boundary
+            await axios.post(`${BE_URL3}/get_model_prediction`, formData);
+
+            // refresh list after success
+            window.location.reload();
+
+
+        } catch (err) {
+            setError(err?.response?.data?.detail || err.message);
+        } finally {
+            setLoading(false);
+        }
+
+        setLoading(false);
+
+        window.location.reload();
+    }
+
+    useEffect(() => {
+        async function loadAll() {
+            try {
+                setLoading(true);
+
+                const [predictionsData, ModelsData] = await Promise.all([
+                    getPredictions(),
+                    getModels(),
+                ]);
+
+                setPredictions(predictionsData);
+                setModels(ModelsData);
+
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadAll();
+    }, [projectId]);
+
+    const downloadPredictionResult = async (predFilePath) => {
+        setLoading(true);
+        const res = await fetch(`${BE_URL3}/download_prediction_result?pred_file_path=${encodeURIComponent(predFilePath)}`);
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = predFilePath.split("/").pop();
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+        setLoading(false);
+        
+    }
 
     return (
         <div className="sub-main-page">
@@ -61,63 +165,59 @@ function Predictions() {
 
                 <div className='form-group'>
 
-                    <h3>CREATE NEW PREDICTION</h3>
+                    <h3>GET PREDICTIONS</h3>
 
                     <Form>
                         <Stack gap={7}>
                             <FormGroup legendText="Input dataset details here">
                                 
                                 <div className="cds--file__container">
-                                    <FileUploader
-                                        accept={[
-                                            '.csv',
-                                            '.png'
-                                        ]}
-                                        buttonKind="primary"
-                                        buttonLabel="Add file"
-                                        filenameStatus="edit"
-                                        iconDescription="Delete file"
-                                        labelDescription="Max file size is 1 MB. Only .csv is supported."
-                                        maxFileSize={1048576}
-                                        multiple
-                                        name=""
-                                        onChange={function c_e() { }}
-                                        onClick={function c_e() { }}
-                                        onDelete={function c_e() { }}
-                                        size="md"
-                                    />
-                                </div>
+                                                                    <FileUploader
+                                                                        accept={[".csv", ".xls", ".xlsx"]}
+                                                                        buttonKind="primary"
+                                                                        buttonLabel="Add file"
+                                                                        filenameStatus="edit"
+                                                                        labelDescription="Max file size is 15 MB. Only .csv .xls .xlsx are supported."
+                                                                        maxFileSize={20048576}
+                                                                        multiple={false}                 // IMPORTANT: backend expects single file
+                                                                        onChange={(e) => {
+                                                                            const f = e?.target?.files?.[0];
+                                                                            setSelectedFile(f || null);
+                                                                        }}
+                                                                        onDelete={() => setSelectedFile(null)}
+                                                                        size="md"
+                                                                    />
+                                                                </div>
                                 <div>
                                     <Select
                                         id="select-1"
-                                        labelText="Select a model"
+                                        labelText="Select a feature store"
                                         size="md"
+                                        onChange={(e) => {
+                                            setSelectedModel(e.target.value);
+                                        }}
                                     >
                                         <SelectItem
                                             text=""
                                             value=""
                                         />
-                                        <SelectItem
-                                            text="An example option that is really long to show what should be done to handle long text"
-                                            value="An example option that is really long to show what should be done to handle long text"
-                                        />
-                                        <SelectItem
-                                            text="Option 2"
-                                            value="option-2"
-                                        />
-                                        <SelectItem
-                                            text="Option 3"
-                                            value="option-3"
-                                        />
-                                        <SelectItem
-                                            text="Option 4"
-                                            value="option-4"
-                                        />
+                                        {models.map((ds, i) => (
+                                            <SelectItem
+                                                text={ds.model_id}
+                                                value={ds.model_id}
+                                            />
+                                        ))}
+                                        
                                     </Select>
                                 </div>
                             </FormGroup>
 
-                            <Button type="submit" className="some-class">
+                            <Button 
+                                type="submit" 
+                                className="some-class"
+                                disabled={!selectedModel || loading}
+                                onClick={getPredictionResult}
+                            >
                                 Submit
                             </Button>
 
@@ -126,26 +226,41 @@ function Predictions() {
                     </Form>
                 </div>
 
+                {loading == true && (
+                                                                    <Loading
+                                                                        active
+                                                                        className="some-class"
+                                                                        description="Loading"
+                                                                        withOverlay={loading}
+                                                                    />
+                                                                )}
+
                 <div className='form-group'>
 
                     <h3>LIST OF PREDICTIONS</h3>
 
+                    {predictions.map((ds, i) => (
+                        <Accordion>
+                            <AccordionItem title={ds.pred_file_path}>
 
+                                <p>Created At: {ds.creation_date}</p>
+                                <p>From Model: {ds.model_id}</p>
+                                <p>
+                                    <Button 
+                                        type="button"
+                                        kind="secondary"
+                                        className="some-class" 
+                                        onClick={() => downloadPredictionResult(ds.pred_file_path)}
+                                    >
+                                        Download Training Result
+                                    </Button>
+                                </p>
 
-                    <Accordion>
-                        <AccordionItem title="Prediction 1">
+                                
+                            </AccordionItem>
+                        </Accordion>
+                    ))}
 
-                            <p>
-                                <b>Processed At</b>: 2025-01-01 10:00:00
-                            </p>
-
-                            <p>
-                                <Button type="submit" className="some-class">
-                                    Download Prediction
-                                </Button>
-                            </p>
-                        </AccordionItem>
-                    </Accordion>
 
 
                 </div>
