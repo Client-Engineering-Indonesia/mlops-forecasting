@@ -38,9 +38,9 @@ echo ""
 # CONFIG (snake_case app names)
 # --------------------------------------------------
 APPS=(
-  "bisma"
-  "feature_stores"
-  "model_predictions"
+#   "bisma"
+#   "feature_stores"
+  "models_predictions"
 )
 
 # --------------------------------------------------

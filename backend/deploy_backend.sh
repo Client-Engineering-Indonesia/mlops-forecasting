@@ -22,9 +22,11 @@ ENV_SECRET_NAME="app-env-secret"
 ENV_FILE=".env"
 
 # Apps in snake_case
-APPS=(
-  "feature_stores"
-)
+APPS=( 
+    # "bisma" 
+    "feature_stores" 
+    # "model_predictions" 
+    )
 
 MAX_RETRIES=1   # 🔥 only allow 1 retry
 
