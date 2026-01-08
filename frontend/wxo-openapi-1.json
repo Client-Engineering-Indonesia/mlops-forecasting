@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://tools-feature-store.1md1m4nn4bi8.us-south.codeengine.appdomain.cloud"
+            "url": "https://feature-stores.24vuwas15qeb.us-south.codeengine.appdomain.cloud"
         }
     ],   
     "paths": {

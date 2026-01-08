@@ -3,38 +3,42 @@ set -e
 
 echo "🚀 Deploying Docker Hub images to IBM Code Engine (us-south)"
 
-# --------------------------------------------------
-# CONFIG
-# --------------------------------------------------
+# ==================================================
+# CONFIGURATION
+# ==================================================
 CE_PROJECT_NAME="cc-6950005cap-vwjxu7pr-codeengine"
 CE_REGION="us-south"
 CONTAINER_PORT=8000
 
-# Infrastructure sizing
+# Infrastructure sizing (NOT low)
 CPU="2"
 MEMORY="4G"
-EPHEMERAL_STORAGE="4.4G"
+EPHEMERAL_STORAGE="2.4G"
 MIN_INSTANCES=1
 MAX_INSTANCES=10
 CONCURRENCY=10
 
+# Secrets
 ENV_SECRET_NAME="app-env-secret"
 ENV_FILE=".env"
+REGISTRY_SECRET_NAME="dockerhub-registry"
 
-# Apps in snake_case
-APPS=( 
-    # "bisma" 
-    "feature_stores" 
-    # "model_predictions" 
-    )
+# Apps in snake_case (Docker image / repo names)
+APPS=(
+    "bisma"
+    "feature_stores"
+    "models_predictions"
+)
 
-MAX_RETRIES=1   # 🔥 only allow 1 retry
+MAX_RETRIES=1
 
-# --------------------------------------------------
+# ==================================================
 # VALIDATION
-# --------------------------------------------------
-if [[ -z "$DOCKERHUB_USERNAME" ]]; then
-  echo "❌ DOCKERHUB_USERNAME is not set"
+# ==================================================
+if [[ -z "$DOCKERHUB_USERNAME" || -z "$DOCKERHUB_PAT" ]]; then
+  echo "❌ DOCKERHUB_USERNAME or DOCKERHUB_PAT not set"
+  echo "👉 export DOCKERHUB_USERNAME=your_username"
+  echo "👉 export DOCKERHUB_PAT=your_dockerhub_pat"
   exit 1
 fi
 
@@ -43,9 +47,9 @@ if [[ ! -f "$ENV_FILE" ]]; then
   exit 1
 fi
 
-# --------------------------------------------------
+# ==================================================
 # TARGET REGION & PROJECT
-# --------------------------------------------------
+# ==================================================
 ibmcloud target -r "$CE_REGION" >/dev/null
 
 if ! ibmcloud ce project select --name "$CE_PROJECT_NAME" >/dev/null 2>&1; then
@@ -56,10 +60,32 @@ fi
 echo "✅ Using Code Engine project: $CE_PROJECT_NAME"
 echo ""
 
-# --------------------------------------------------
-# SYNC .env → SECRET
-# --------------------------------------------------
-echo "🔐 Syncing .env to Code Engine secret: $ENV_SECRET_NAME"
+# ==================================================
+# CREATE / UPDATE DOCKER HUB REGISTRY SECRET
+# ==================================================
+echo "🔐 Syncing Docker Hub registry credentials"
+
+if ibmcloud ce registry get --name "$REGISTRY_SECRET_NAME" >/dev/null 2>&1; then
+  ibmcloud ce registry update \
+    --name "$REGISTRY_SECRET_NAME" \
+    --server docker.io \
+    --username "$DOCKERHUB_USERNAME" \
+    --password "$DOCKERHUB_PAT"
+else
+  ibmcloud ce registry create \
+    --name "$REGISTRY_SECRET_NAME" \
+    --server docker.io \
+    --username "$DOCKERHUB_USERNAME" \
+    --password "$DOCKERHUB_PAT"
+fi
+
+echo "✅ Registry secret ready"
+echo ""
+
+# ==================================================
+# CREATE / UPDATE ENV SECRET FROM .env
+# ==================================================
+echo "🔐 Syncing .env to Code Engine secret"
 
 if ibmcloud ce secret get --name "$ENV_SECRET_NAME" >/dev/null 2>&1; then
   ibmcloud ce secret update \
@@ -71,19 +97,20 @@ else
     --from-env-file "$ENV_FILE"
 fi
 
-echo "✅ Secret synced"
+echo "✅ Env secret ready"
 echo ""
 
-# --------------------------------------------------
-# HELPER: SHOW LOGS & EVENTS
-# --------------------------------------------------
+# ==================================================
+# HELPER: SHOW DEBUG INFO
+# ==================================================
 show_debug_info () {
   local APP_NAME=$1
 
   echo ""
   echo "🚨 DEPLOYMENT FAILED FOR: $APP_NAME"
-  echo "-----------------------------------"
-  echo "📄 Application details:"
+  echo "----------------------------------"
+
+  echo "📄 Application status:"
   ibmcloud ce application get --name "$APP_NAME" || true
 
   echo ""
@@ -98,9 +125,9 @@ show_debug_info () {
   echo ""
 }
 
-# --------------------------------------------------
-# DEPLOY APPS WITH RETRY GUARD
-# --------------------------------------------------
+# ==================================================
+# DEPLOY APPLICATIONS (WITH RETRY GUARD)
+# ==================================================
 for app in "${APPS[@]}"; do
   CE_APP_NAME="${app//_/-}"
   IMAGE="docker.io/$DOCKERHUB_USERNAME/$app:latest"
@@ -113,16 +140,17 @@ for app in "${APPS[@]}"; do
     echo "   Image: $IMAGE"
 
     if ibmcloud ce application get --name "$CE_APP_NAME" >/dev/null 2>&1; then
-      DEPLOY_CMD="update"
+      ACTION="update"
     else
-      DEPLOY_CMD="create"
+      ACTION="create"
     fi
 
     set +e
-    if [[ "$DEPLOY_CMD" == "update" ]]; then
+    if [[ "$ACTION" == "update" ]]; then
       ibmcloud ce application update \
         --name "$CE_APP_NAME" \
         --image "$IMAGE" \
+        --registry-secret "$REGISTRY_SECRET_NAME" \
         --port "$CONTAINER_PORT" \
         --cpu "$CPU" \
         --memory "$MEMORY" \
@@ -135,6 +163,7 @@ for app in "${APPS[@]}"; do
       ibmcloud ce application create \
         --name "$CE_APP_NAME" \
         --image "$IMAGE" \
+        --registry-secret "$REGISTRY_SECRET_NAME" \
         --port "$CONTAINER_PORT" \
         --cpu "$CPU" \
         --memory "$MEMORY" \
@@ -153,20 +182,21 @@ for app in "${APPS[@]}"; do
     fi
 
     ATTEMPT=$((ATTEMPT + 1))
-    echo "⚠️ Deploy failed, retrying..."
+    echo "⚠️ Deployment failed, retrying..."
     sleep 5
   done
 
   if [[ "$SUCCESS" != "true" ]]; then
     show_debug_info "$CE_APP_NAME"
-    echo "❌ Max retries exceeded. Stopping deployment."
+    echo "❌ Max retries exceeded. Stopping all deployments."
     exit 1
   fi
 
-  # --------------------------------------------------
+  # ------------------------------------------------
   # SHOW APPLICATION URL
-  # --------------------------------------------------
-  APP_URL=$(ibmcloud ce application get --name "$CE_APP_NAME" \
+  # ------------------------------------------------
+  APP_URL=$(ibmcloud ce application get \
+    --name "$CE_APP_NAME" \
     --output json | jq -r '.status.url')
 
   echo "✅ Successfully deployed: $CE_APP_NAME"
